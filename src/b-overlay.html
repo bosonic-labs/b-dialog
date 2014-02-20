@@ -1,0 +1,25 @@
+<element name="b-overlay">
+    <style>
+        .b-overlay {
+          position: fixed;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          background: black;
+          filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
+          opacity: 0.5;
+          display: block;
+        }
+    </style>
+    <template>
+        <div class="b-overlay"></div>
+    </template>
+    <script>
+        ({
+            readyCallback: function () {
+                this.appendChild(this.template.content.cloneNode(true));
+            }
+        });
+    </script>
+</element>

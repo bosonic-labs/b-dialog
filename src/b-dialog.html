@@ -1,0 +1,79 @@
+<element name="b-dialog">
+    <style>
+        b-dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            max-width: 100%;
+            max-height: 100%;
+            overflow: auto;
+            background: white;
+            border: 1px solid #333;
+            z-index: 1;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -ms-box-sizing: border-box;
+            -o-box-sizing: border-box;
+            box-sizing: border-box;
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
+        b-dialog[visible] {
+            display: block;
+        }
+    </style>
+    <template>
+        <div class="b-dialog">
+            <content></content>
+        </div>
+    </template>
+    <script>
+        ({
+            readyCallback: function() {
+                var root = this.createShadowRoot();
+                root.appendChild(this.template.content.cloneNode(true));
+            },
+            show: function() {
+                this.setAttribute('visible', '');
+            },
+            showModal: function() {
+                this.overlay = document.createElement('b-overlay');
+                this.parentNode.appendChild(this.overlay);
+
+                var that = this;
+                document.addEventListener('keyup', function(e) {
+                    if (e.which === 27) {
+                        that.cancel();
+                    }
+                }, false);
+                
+                this.show();
+            },
+            hide: function() {
+                this.removeAttribute('visible');
+                if (this.overlay) {
+                    this.parentNode.removeChild(this.overlay);
+                }
+                // FIXME : virer le listener sur le keyup
+                this.dispatchEvent(new CustomEvent('close'));
+            },
+            close: function() {
+                this.hide();
+            },
+            open: function() {
+                this.show();
+            },
+            cancel: function() {
+                var doCancel = this.dispatchEvent(new CustomEvent('cancel', { cancelable: true }));
+                if (doCancel) {
+                    this.hide();
+                }
+            }
+        });
+    </script>
+</element>
