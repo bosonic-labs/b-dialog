@@ -1,6 +1,6 @@
 {
   "name": "b-dialog",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "b-dialog ========",
   "main": "Gruntfile.js",
   "scripts": {
@@ -16,7 +16,8 @@
     "url": "https://github.com/bosonic/b-dialog/issues"
   },
   "devDependencies": {
-    "bosonic-test-tools": "*"
+    "bosonic-test-tools": "*",
+    "grunt-bosonic": "*"
   },
   "dependencies": {
     "bosonic": "*"

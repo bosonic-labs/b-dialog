@@ -1,6 +1,6 @@
 <element name="b-dialog">
     <style>
-        b-dialog {
+        :host {
             display: none;
             position: fixed;
             top: 50%;
@@ -23,7 +23,7 @@
             transform: translate(-50%, -50%);
         }
 
-        b-dialog[visible] {
+        :host[visible] {
             display: block;
         }
     </style>
@@ -40,26 +40,25 @@
             },
             show: function() {
                 this.setAttribute('visible', '');
+                this.keyupListener = this.onKeyup.bind(this);
+                document.addEventListener('keyup', this.keyupListener, false);
             },
             showModal: function() {
                 this.overlay = document.createElement('b-overlay');
                 this.parentNode.appendChild(this.overlay);
-
-                var that = this;
-                document.addEventListener('keyup', function(e) {
-                    if (e.which === 27) {
-                        that.cancel();
-                    }
-                }, false);
-                
                 this.show();
+            },
+            onKeyup: function(e) {
+                if (e.which === 27) {
+                    this.cancel();
+                }
             },
             hide: function() {
                 this.removeAttribute('visible');
                 if (this.overlay) {
                     this.parentNode.removeChild(this.overlay);
                 }
-                // FIXME : virer le listener sur le keyup
+                document.removeEventListener('keyup', this.keyupListener, false);
                 this.dispatchEvent(new CustomEvent('close'));
             },
             close: function() {
