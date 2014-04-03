@@ -4,7 +4,6 @@
     <title>Demo</title>
     <meta charset="utf-8">
     <script src="js/bosonic-polyfills.js"></script>
-    <script src="js/bosonic.js"></script>
     <script src="js/b-dialog.js"></script>
     <link href="css/b-dialog.css" rel="stylesheet">
 </head>
@@ -19,28 +18,30 @@
     </b-dialog>
 
     <script type="text/javascript">
-        var showOverlayButton = document.getElementById('show-overlay');
-        showOverlayButton.addEventListener('click', function() {
-            document.body.appendChild(document.createElement('b-overlay'));
-        }, false);
+        window.addEventListener('WebComponentsReady', function() {
+            var showOverlayButton = document.getElementById('show-overlay');
+            showOverlayButton.addEventListener('click', function() {
+                document.body.appendChild(document.createElement('b-overlay'));
+            }, false);
 
-        var showDialogButton = document.getElementById('show-dialog');
-        showDialogButton.addEventListener('click', function() {
-            document.querySelector('b-dialog').show();
-        }, false);
+            var showDialogButton = document.getElementById('show-dialog');
+            showDialogButton.addEventListener('click', function() {
+                document.querySelector('b-dialog').show();
+            }, false);
 
-        var showModalButton = document.getElementById('show-modal');
-        showModalButton.addEventListener('click', function() {
-            document.querySelector('b-dialog').showModal();
-        }, false);
+            var showModalButton = document.getElementById('show-modal');
+            showModalButton.addEventListener('click', function() {
+                document.querySelector('b-dialog').showModal();
+            }, false);
 
-        var closeButton = document.getElementById('close');
-        var dialog = document.querySelector('b-dialog');
-        dialog.addEventListener('close', function() {
-            alert('Dialog close() method called');
-        }, false);
-        closeButton.addEventListener('click', function() {
-            dialog.hide();
-        }, false);
+            var dialog = document.querySelector('b-dialog');
+            var closeButton = dialog.querySelector('button');
+            closeButton.addEventListener('click', function() {
+                dialog.hide();
+            }, false);
+            dialog.addEventListener('b-close', function() {
+                alert('Dialog close() method called');
+            }, false);
+        });
     </script>
 </body>

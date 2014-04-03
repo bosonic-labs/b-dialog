@@ -1,7 +1,7 @@
 {
   "name": "b-dialog",
-  "version": "0.1.2",
-  "description": "b-dialog ========",
+  "version": "0.2.0",
+  "description": "A Bosonic element which can be used for popups in a web page.",
   "main": "Gruntfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,9 +17,9 @@
   },
   "devDependencies": {
     "bosonic-test-tools": "*",
-    "grunt-bosonic": "*"
+    "grunt-bosonic": ">=0.4.0"
   },
   "dependencies": {
-    "bosonic": "*"
+    "bosonic": ">=0.4.0"
   }
 }

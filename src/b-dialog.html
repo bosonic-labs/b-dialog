@@ -34,7 +34,7 @@
     </template>
     <script>
         ({
-            readyCallback: function() {
+            createdCallback: function() {
                 var root = this.createShadowRoot();
                 root.appendChild(this.template.content.cloneNode(true));
             },
@@ -59,7 +59,7 @@
                     this.parentNode.removeChild(this.overlay);
                 }
                 document.removeEventListener('keyup', this.keyupListener, false);
-                this.dispatchEvent(new CustomEvent('close'));
+                this.dispatchEvent(new CustomEvent('b-close'));
             },
             close: function() {
                 this.hide();
@@ -68,7 +68,7 @@
                 this.show();
             },
             cancel: function() {
-                var doCancel = this.dispatchEvent(new CustomEvent('cancel', { cancelable: true }));
+                var doCancel = this.dispatchEvent(new CustomEvent('b-cancel', { cancelable: true }));
                 if (doCancel) {
                     this.hide();
                 }

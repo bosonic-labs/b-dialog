@@ -17,7 +17,7 @@
     </template>
     <script>
         ({
-            readyCallback: function () {
+            createdCallback: function () {
                 this.appendChild(this.template.content.cloneNode(true));
             }
         });
