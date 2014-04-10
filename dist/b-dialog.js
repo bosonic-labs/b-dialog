@@ -1,8 +1,23 @@
 (function () {
+    var KEY = {
+            ENTER: 13,
+            ESC: 27,
+            TAB: 9
+        };
+    var focusableElementsSelector = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]';
+    function getFocusableElements(container) {
+        return container.querySelectorAll(focusableElementsSelector);
+    }
+    function getFirstFocusableElement(container) {
+        return container.querySelector(focusableElementsSelector);
+    }
     var BDialogPrototype = Object.create(HTMLElement.prototype, {
             createdCallback: {
                 enumerable: true,
                 value: function () {
+                    this.tabIndex = -1;
+                    this.setAttribute('role', 'dialog');
+                    this.setAttribute('aria-hidden', 'true');
                     var root = this.createShadowRoot();
                     root.appendChild(this.template.content.cloneNode(true));
                 }
@@ -11,8 +26,10 @@
                 enumerable: true,
                 value: function () {
                     this.setAttribute('visible', '');
-                    this.keyupListener = this.onKeyup.bind(this);
-                    document.addEventListener('keyup', this.keyupListener, false);
+                    this.setAttribute('aria-hidden', 'false');
+                    this.keydownListener = this.onKeydown.bind(this);
+                    document.addEventListener('keydown', this.keydownListener, false);
+                    this.grabFocus();
                 }
             },
             showModal: {
@@ -23,22 +40,67 @@
                     this.show();
                 }
             },
-            onKeyup: {
+            grabFocus: {
+                enumerable: true,
+                value: function () {
+                    this.previouslyFocusedElement = document.querySelector(':focus');
+                    var firstFocusableElement = getFirstFocusableElement(this);
+                    if (firstFocusableElement) {
+                        firstFocusableElement.focus();
+                    } else {
+                        this.focus();
+                    }
+                }
+            },
+            releaseFocus: {
+                enumerable: true,
+                value: function () {
+                    if (this.previouslyFocusedElement) {
+                        this.previouslyFocusedElement.focus();
+                        this.previouslyFocusedElement = null;
+                    }
+                }
+            },
+            trapFocus: {
                 enumerable: true,
                 value: function (e) {
-                    if (e.which === 27) {
-                        this.cancel();
+                    var focusableElements = getFocusableElements(this), currentlyFocused = this.querySelector(':focus'), currentlyFocusedIndex = Array.prototype.indexOf.call(focusableElements, currentlyFocused), lastFocusableElementIndex = focusableElements.length - 1;
+                    if (e.shiftKey && currentlyFocusedIndex === 0) {
+                        focusableElements.item(lastFocusableElementIndex).focus();
+                        e.preventDefault();
+                    } else if (!e.shiftKey && currentlyFocusedIndex === lastFocusableElementIndex) {
+                        focusableElements.item(0).focus();
+                        e.preventDefault();
+                    }
+                }
+            },
+            onKeydown: {
+                enumerable: true,
+                value: function (e) {
+                    switch (e.which) {
+                    case KEY.ESC: {
+                            this.cancel();
+                            break;
+                        }
+                    case KEY.TAB: {
+                            this.trapFocus(e);
+                            break;
+                        }
+                    default:
+                        return;
                     }
                 }
             },
             hide: {
                 enumerable: true,
                 value: function () {
+                    this.releaseFocus();
                     this.removeAttribute('visible');
+                    this.setAttribute('aria-hidden', 'true');
                     if (this.overlay) {
                         this.parentNode.removeChild(this.overlay);
                     }
-                    document.removeEventListener('keyup', this.keyupListener, false);
+                    document.removeEventListener('keydown', this.keydownListener, false);
                     this.dispatchEvent(new CustomEvent('b-close'));
                 }
             },

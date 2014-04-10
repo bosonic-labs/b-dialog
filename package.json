@@ -1,6 +1,6 @@
 {
   "name": "b-dialog",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A Bosonic element which can be used for popups in a web page.",
   "main": "Gruntfile.js",
   "scripts": {
